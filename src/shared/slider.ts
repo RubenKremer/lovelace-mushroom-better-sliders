@@ -60,6 +60,11 @@ export class SliderItem extends LitElement {
     private _mc?: HammerManager;
 
     @state() controlled: boolean = false;
+    
+    // value do be displayed on the slider while it is controlled
+    // prevents jiggly motion of the slider, caused by the preview feature
+    @state() controlValue: number = 0; 
+
 
     valueToPercentage(value: number) {
         return (value - this.min) / (this.max - this.min);
@@ -86,6 +91,8 @@ export class SliderItem extends LitElement {
 
     @query("#slider")
     private slider;
+
+    private speedFactor = 0.4;
 
     setupListeners() {
         const getPercentageFromEvent = (e: HammerInput) => {
@@ -114,10 +121,18 @@ export class SliderItem extends LitElement {
             const getPanTargetValue = (e) => {
                 const percentage = getPercentageFromEvent(e);
 
-                const deltaPercentage = (percentage - panstartPercentage) * 0.5;
+                const deltaPercentage = (percentage - panstartPercentage) * this.speedFactor;
                 const deltaValue = (this.max - this.min) * deltaPercentage;
 
-                return Math.max(Math.min(savedValue + deltaValue, this.max), this.min);
+                let clamped = Math.max(Math.min(savedValue + deltaValue, this.max), this.min);
+                
+                // make it easier to hit 1%
+                let justBeforeMin = this.min + (this.max - this.min) / 100 
+                if (clamped <= justBeforeMin && clamped > this.min) {
+                   return justBeforeMin;
+                }
+
+                return clamped
             }
 
             const throttledChange = throttle((value) => {
@@ -132,8 +147,11 @@ export class SliderItem extends LitElement {
 
             this._mc.on("panstart", (e) => {
                 if (this.disabled) return;
-                this.controlled = true;
                 savedValue = this.value || this.min;
+                
+                // switch slider to display controlValue
+                this.controlValue = savedValue
+                this.controlled = true;
 
                 panstartPercentage = getPercentageFromEvent(e)
             });
@@ -145,7 +163,10 @@ export class SliderItem extends LitElement {
             this._mc.on("panmove", (e) => {
                 if (this.disabled) return;
                 this.value = getPanTargetValue(e)
+                
+                this.controlValue = this.value
                 const discreteValue = Math.round(this.value / this.step) * this.step;
+                
                 this.dispatchEvent(
                     new CustomEvent("current-change", {
                         detail: {
@@ -153,14 +174,19 @@ export class SliderItem extends LitElement {
                         },
                     })
                 );
-                throttledChange(discreteValue)
+
+                // don't "preview" value when slider changes to 0
+                const cappedValue = Math.max(discreteValue, 1)
+                throttledChange(cappedValue)
             });
             this._mc.on("panend", (e) => {
                 if (this.disabled) return;
                 this.controlled = false;
                 const targetValue = getPanTargetValue(e);
+                
                 // Prevent from input releasing on a value that doesn't lie on a step
                 this.value = Math.round(targetValue / this.step) * this.step;
+                
                 this.dispatchEvent(
                     new CustomEvent("current-change", {
                         detail: {
@@ -168,6 +194,7 @@ export class SliderItem extends LitElement {
                         },
                     })
                 );
+
                 this.dispatchEvent(
                     new CustomEvent("change", {
                         detail: {
@@ -213,8 +240,10 @@ export class SliderItem extends LitElement {
                     id="slider"
                     class="slider"
                     style=${styleMap({
-            "--value": `${this.valueToPercentage(this.value ?? 0)}`,
-        })}
+                        "--value": `${
+                            this.valueToPercentage((this.controlled ? this.controlValue : this.value) ?? 0)
+                        }`,
+                    })}
                 >
                     <div class="slider-track-background"></div>
                     ${this.showActive ? html`<div class="slider-track-active"></div>` : nothing}
