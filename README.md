@@ -5,28 +5,21 @@
 ![downloads][downloads-badge]
 ![build][build-badge]
 
-<a href="https://www.buymeacoffee.com/piitaya" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+[original-repo]: https://github.com/piitaya/lovelace-mushroom
 
 ![Overview](https://user-images.githubusercontent.com/5878303/152332130-760cf616-5c40-4825-a482-bb8f1f0f5251.png)
 
-## What is mushroom ?
+## What is mushroom-better-sliders?
+This is a fork of the fantastic [Mushrooms UI Cards][original-repo] by piitaya, a collection of cards for [Home Assistant][home-assistant] Dashboard UI.
 
-Mushroom is a collection of cards for [Home Assistant][home-assistant] Dashboard UI.
+It focuses on making the light sliders more touch friendly.
 
-Mushroom mission is to propose easy to use components to build your [Home Assistant][home-assistant] dashboard.
+1. Sliders move on half speed when dragged by a finger (easier to hit small values)
+2. Sliders can be dragged from any point on the slider (like in iOS Home)
+3. Sliders let you preview your changes (live feedback)
 
-### Features
 
--   🛠 Editor for **all cards** and and **all options** (no need to edit `yaml`)
--   😍 Icon picker
--   🖌 Color picker
--   🚀 0 dependencies : no need to install another card.
--   🌈 Based on Material UI colors
--   🌓 Light and dark theme support
--   🎨 Optional theme customization
--   🌎 Internationalization
 
-The goal of Mushroom is not to provide custom card for deep customization. You can use the excellent [UI Lovelace Minimalist][ui-lovelace-minimalist] and [Button card][button-card] plugins for this.
 
 ## Installation
 
