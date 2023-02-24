@@ -1,4 +1,4 @@
-# 🍄 Mushroom
+# 🍄 Mushroom (--Better-Sliders)
 
 [![hacs][hacs-badge]][hacs-url]
 [![release][release-badge]][release-url]
@@ -7,12 +7,12 @@
 
 [original-repo]: https://github.com/piitaya/lovelace-mushroom
 
-![Overview](https://user-images.githubusercontent.com/5878303/152332130-760cf616-5c40-4825-a482-bb8f1f0f5251.png)
+![Overview](https://raw.githubusercontent.com/phischdev/lovelace-mushroom/master/.github/images/readme_image.png)
 
 ## What is mushroom-better-sliders?
 This is a fork of the fantastic [Mushrooms UI Cards][original-repo] by piitaya, a collection of cards for [Home Assistant][home-assistant] Dashboard UI.
 
-It focuses on making the light sliders more touch friendly.
+It focuses on making the sliders more touch friendly.
 
 1. Sliders move on half speed when dragged by a finger (easier to hit small values)
 2. Sliders can be dragged from any point on the slider (like in iOS Home)
