@@ -93,6 +93,7 @@ export class SliderItem extends LitElement {
     private slider;
 
     private speedFactor = 0.4;
+    private previewThrottle = 130; // ms
 
     setupListeners() {
         const getPercentageFromEvent = (e: HammerInput) => {
@@ -116,6 +117,7 @@ export class SliderItem extends LitElement {
             this._mc.add(new Hammer.Tap({ event: "singletap" }));
 
             let savedValue;
+            let justBeforeMin = this.min + (this.max - this.min) / 100 
 
             let panstartPercentage = 0;
             const getPanTargetValue = (e) => {
@@ -125,9 +127,8 @@ export class SliderItem extends LitElement {
                 const deltaValue = (this.max - this.min) * deltaPercentage;
 
                 let clamped = Math.max(Math.min(savedValue + deltaValue, this.max), this.min);
-                
+
                 // make it easier to hit 1%
-                let justBeforeMin = this.min + (this.max - this.min) / 100 
                 if (clamped <= justBeforeMin && clamped > this.min) {
                    return justBeforeMin;
                 }
@@ -143,7 +144,7 @@ export class SliderItem extends LitElement {
                         },
                     })
                 );
-            }, 130)
+            }, this.previewThrottle)
 
             this._mc.on("panstart", (e) => {
                 if (this.disabled) return;
@@ -176,7 +177,7 @@ export class SliderItem extends LitElement {
                 );
 
                 // don't "preview" value when slider changes to 0
-                const cappedValue = Math.max(discreteValue, 1)
+                const cappedValue = Math.max(discreteValue, justBeforeMin)
                 throttledChange(cappedValue)
             });
             this._mc.on("panend", (e) => {
